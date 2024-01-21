@@ -8,6 +8,15 @@
         "revision" : "90dea5dea799e2b3684f5c72f07141d8516ce80b",
         "version" : "0.9.2"
       }
+    },
+    {
+      "identity" : "mapcache",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/merlos/MapCache",
+      "state" : {
+        "revision" : "c18c99823de57b6d91c6af248a1e436d380f88cc",
+        "version" : "0.10.0"
+      }
     }
   ],
   "version" : 2

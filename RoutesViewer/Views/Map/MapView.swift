@@ -18,32 +18,33 @@ struct MapView: View {
 
     var body: some View {
         VStack {
-            Map(position: $position) {
-                ForEach(documentStorage.selectedDocument?.tracks ?? []) { track in
-                    TrackMapContent(track: track)
-                }
-
-                if let selectedPoint {
-                    Annotation(coordinate: selectedPoint.coordinate) {
-                        Circle()
-                            .foregroundStyle(.red)
-                            .frame(width: 10)
-                    } label: {
-                        Circle()
-                            .foregroundStyle(.red)
-                            .frame(width: 10)
-                    }
-                }
-            }
-            .mapStyle(mapStyle.mapStyle)
-            .mapControls {
-                MapZoomStepper()
-                MapCompass()
-                MapScaleView()
-            }
-            .overlay(alignment: .bottomLeading) {
-                mapStylePickerView
-            }
+            CustomMap(documentStorage: documentStorage)
+//            Map(position: $position) {
+//                ForEach(documentStorage.selectedDocument?.tracks ?? []) { track in
+//                    TrackMapContent(track: track)
+//                }
+//
+//                if let selectedPoint {
+//                    Annotation(coordinate: selectedPoint.coordinate) {
+//                        Circle()
+//                            .foregroundStyle(.red)
+//                            .frame(width: 10)
+//                    } label: {
+//                        Circle()
+//                            .foregroundStyle(.red)
+//                            .frame(width: 10)
+//                    }
+//                }
+//            }
+//            .mapStyle(mapStyle.mapStyle)
+//            .mapControls {
+//                MapZoomStepper()
+//                MapCompass()
+//                MapScaleView()
+//            }
+//            .overlay(alignment: .bottomLeading) {
+//                mapStylePickerView
+//            }
             chartView
         }
         .onAppear {

@@ -41,6 +41,10 @@
 		17C9D4942B59C28800CCF143 /* StatisticCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C9D4932B59C28800CCF143 /* StatisticCalculator.swift */; };
 		17C9D4962B5B37D200CCF143 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C9D4952B5B37D200CCF143 /* Sequence.swift */; };
 		17C9D4982B5BF10300CCF143 /* Statistic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C9D4972B5BF10300CCF143 /* Statistic.swift */; };
+		17F013022B5C0F5700D31519 /* MapCache in Frameworks */ = {isa = PBXBuildFile; productRef = 17F013012B5C0F5700D31519 /* MapCache */; };
+		17F013042B5C100700D31519 /* CustomMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F013032B5C100700D31519 /* CustomMap.swift */; };
+		17F013062B5C1B3500D31519 /* TileServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F013052B5C1B3500D31519 /* TileServer.swift */; };
+		17F013082B5C5E8800D31519 /* GradientPolyline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F013072B5C5E8800D31519 /* GradientPolyline.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -99,6 +103,9 @@
 		17C9D4932B59C28800CCF143 /* StatisticCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticCalculator.swift; sourceTree = "<group>"; };
 		17C9D4952B5B37D200CCF143 /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
 		17C9D4972B5BF10300CCF143 /* Statistic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Statistic.swift; sourceTree = "<group>"; };
+		17F013032B5C100700D31519 /* CustomMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMap.swift; sourceTree = "<group>"; };
+		17F013052B5C1B3500D31519 /* TileServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileServer.swift; sourceTree = "<group>"; };
+		17F013072B5C5E8800D31519 /* GradientPolyline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientPolyline.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +113,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				17F013022B5C0F5700D31519 /* MapCache in Frameworks */,
 				17B3BDDF2B4F4E0A00D94581 /* CoreGPX in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -310,6 +318,9 @@
 			children = (
 				17B3BDE12B4F514700D94581 /* MapStylePicker.swift */,
 				17B3BDE02B4F514700D94581 /* MapView.swift */,
+				17F013032B5C100700D31519 /* CustomMap.swift */,
+				17F013052B5C1B3500D31519 /* TileServer.swift */,
+				17F013072B5C5E8800D31519 /* GradientPolyline.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -341,6 +352,7 @@
 			name = RoutesViewer;
 			packageProductDependencies = (
 				17B3BDDE2B4F4E0A00D94581 /* CoreGPX */,
+				17F013012B5C0F5700D31519 /* MapCache */,
 			);
 			productName = RoutesViewer;
 			productReference = 17B3BDAF2B4F4D4400D94581 /* RoutesViewer.app */;
@@ -416,6 +428,7 @@
 			mainGroup = 17B3BDA62B4F4D4400D94581;
 			packageReferences = (
 				17B3BDDD2B4F4E0A00D94581 /* XCRemoteSwiftPackageReference "CoreGPX" */,
+				17F013002B5C0F5700D31519 /* XCRemoteSwiftPackageReference "MapCache" */,
 			);
 			productRefGroup = 17B3BDB02B4F4D4400D94581 /* Products */;
 			projectDirPath = "";
@@ -469,6 +482,7 @@
 				17B3BDE62B4F51BD00D94581 /* EditTrackMetadataView.swift in Sources */,
 				1778AB7E2B5464FA00B939C5 /* DocumentView.swift in Sources */,
 				17C9D4942B59C28800CCF143 /* StatisticCalculator.swift in Sources */,
+				17F013062B5C1B3500D31519 /* TileServer.swift in Sources */,
 				17B3BDB52B4F4D4400D94581 /* ContentView.swift in Sources */,
 				1778AB552B51FEB000B939C5 /* FilesTree.swift in Sources */,
 				17C9D4962B5B37D200CCF143 /* Sequence.swift in Sources */,
@@ -477,10 +491,12 @@
 				1778AB7B2B5464C600B939C5 /* DirectoryView.swift in Sources */,
 				1778AB592B5214CD00B939C5 /* URL+isDirectory.swift in Sources */,
 				17B3BDB32B4F4D4400D94581 /* RoutesViewerApp.swift in Sources */,
+				17F013082B5C5E8800D31519 /* GradientPolyline.swift in Sources */,
 				1778AB6E2B52FDAF00B939C5 /* Track.swift in Sources */,
 				17B3BDE72B4F51BD00D94581 /* SidebarView.swift in Sources */,
 				1778AB802B54651300B939C5 /* TrackView.swift in Sources */,
 				1778AB5D2B52159200B939C5 /* DocumentsDirectory.swift in Sources */,
+				17F013042B5C100700D31519 /* CustomMap.swift in Sources */,
 				1778AB5B2B5214DE00B939C5 /* URL+contentType.swift in Sources */,
 				1778AB572B5214AE00B939C5 /* DocumentsTree.swift in Sources */,
 				1778AB732B530DAD00B939C5 /* MapCameraPosition+coordinateRect.swift in Sources */,
@@ -821,6 +837,14 @@
 				minimumVersion = 0.9.2;
 			};
 		};
+		17F013002B5C0F5700D31519 /* XCRemoteSwiftPackageReference "MapCache" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/merlos/MapCache";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.10.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -828,6 +852,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 17B3BDDD2B4F4E0A00D94581 /* XCRemoteSwiftPackageReference "CoreGPX" */;
 			productName = CoreGPX;
+		};
+		17F013012B5C0F5700D31519 /* MapCache */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 17F013002B5C0F5700D31519 /* XCRemoteSwiftPackageReference "MapCache" */;
+			productName = MapCache;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
