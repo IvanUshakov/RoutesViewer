@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MapKit
 
 enum TileServer: CaseIterable {
     case appleStandard
@@ -14,6 +15,15 @@ enum TileServer: CaseIterable {
     case openStreetMap
     case openTopoMap
     case openTopoMapCZ
+
+    var mapConfiguration: MKMapConfiguration? {
+        switch self {
+        case .appleStandard: MKStandardMapConfiguration(elevationStyle: .flat, emphasisStyle: .default)
+        case .appleImagery: MKImageryMapConfiguration(elevationStyle: .flat)
+        case .appleHybrid: MKHybridMapConfiguration(elevationStyle: .flat)
+        default: nil
+        }
+    }
 
     var name: String {
         switch self {

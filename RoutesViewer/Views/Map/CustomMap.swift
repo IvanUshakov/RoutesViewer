@@ -21,7 +21,12 @@ class CustomCocoaMap: NSView {
     var documentStorage: DocumentStorage
 
     var position = MapCameraPosition.userLocation(fallback: .automatic)
-    var tileServer: TileServer = .openTopoMapCZ
+    var tileServer: TileServer = .openTopoMapCZ {
+        didSet {
+            updateTileServer()
+        }
+    }
+
     var selectedTrack: Track?
 
     init(documentStorage: DocumentStorage) {
@@ -77,7 +82,7 @@ class CustomCocoaMap: NSView {
 
 extension CustomCocoaMap {
     @objc func tileServerDidChange(_ sender: NSSegmentedControl) {
-        self.tileServer = TileServer.allCases[sender.selectedSegment]
+        self.tileServer = TileServer.allCases[sender.indexOfSelectedItem]
     }
 }
 
@@ -122,18 +127,32 @@ extension CustomCocoaMap {
         self.mapView.showsZoomControls = true
         self.mapView.showsPitchControl = true
 
-        let mapCache = MapCache(withConfig: mapCacheConfig(from: tileServer))
-        cachedTileOverlay = mapView.useCache(mapCache)
+        updateTileServer()
+    }
+
+    func updateTileServer() {
+        if let cachedTileOverlay {
+            mapView.removeOverlay(cachedTileOverlay)
+        }
+
+        if let mapConfiguration = tileServer.mapConfiguration {
+            mapView.preferredConfiguration = mapConfiguration
+        } else {
+            let mapCache = MapCache(withConfig: mapCacheConfig(from: tileServer))
+            cachedTileOverlay = mapView.useCache(mapCache)
+        }
     }
 
     func addTileServerPopUpButton() {
-        tileServerPopUpButton.frame = NSRect(x: 0, y: 0, width: 145, height: 25)
+        tileServerPopUpButton.frame = NSRect(x: 8, y: 8, width: 145, height: 25)
         for server in TileServer.allCases {
             tileServerPopUpButton.addItem(withTitle: server.name)
         }
         tileServerPopUpButton.selectItem(at: TileServer.allCases.firstIndex(of: tileServer) ?? 0)
         tileServerPopUpButton.wantsLayer = true
-        tileServerPopUpButton.layer?.opacity = 0.9
+        tileServerPopUpButton.layer?.opacity = 0.8
+        tileServerPopUpButton.target = self
+        tileServerPopUpButton.action = #selector(tileServerDidChange(_:))
         self.addSubview(tileServerPopUpButton)
     }
 
