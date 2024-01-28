@@ -105,7 +105,7 @@ extension CustomCocoaMap: MKMapViewDelegate {
             renderer.fillColor = fillColor
             renderer.arrowIcon = NSImage(named: "arrow")
             renderer.arrowIconDistance = 20
-//            renderer.alpha = selectedTrack?.style.color.alphaComponent ?? 1
+            renderer.alpha = selectedTrack?.style.color.alphaComponent ?? 1
             return renderer
         }
 

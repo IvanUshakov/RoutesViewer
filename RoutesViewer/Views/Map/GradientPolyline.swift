@@ -14,19 +14,13 @@ class GradientPolyline: MKPolyline {
 
     var hues: [CGFloat] = []
 
-    public func getHue(from index: Int) -> CGColor {
-        return NSColor(hue: hues[index], saturation: 0.9, brightness: 0.9, alpha: 1).cgColor
-    }
-}
-
-extension GradientPolyline {
     convenience init(points: [Point], maxVelocity: Double, minVelocity: Double = 0) {
         let coordinates = points.map(\.coordinates)
         self.init(coordinates: coordinates, count: coordinates.count)
 
-        let hueDiaposon = (Self.maxHue - Self.minHue)
-        let velocityDiaposon = (maxVelocity - minVelocity)
-        hues = points.map { CGFloat(Self.minHue + (($0.velocity - minVelocity) * hueDiaposon) / velocityDiaposon) }
+        let hueRange = (Self.maxHue - Self.minHue)
+        let velocityRange = (maxVelocity - minVelocity)
+        hues = points.map { CGFloat(Self.minHue + (($0.velocity - minVelocity) * hueRange) / velocityRange) }
     }
 }
 
@@ -38,12 +32,12 @@ extension GradientPolyline {
 }
 
 class GradidentPolylineRenderer: MKPolylineRenderer {
+    let gradientPolyline: GradientPolyline
+
     var borderWidth: CGFloat = 1
-    
     var arrowIcon: NSImage?
     var arrowIconDistance: CGFloat = 70
-
-    let gradientPolyline: GradientPolyline
+    var gradient: Bool = true // TODO: rename
 
     init(gradientPolyline: GradientPolyline) {
         self.gradientPolyline = gradientPolyline
@@ -52,124 +46,110 @@ class GradidentPolylineRenderer: MKPolylineRenderer {
 
     override func draw(_ mapRect: MKMapRect, zoomScale: MKZoomScale, in context: CGContext) {
         guard rect(for: mapRect).intersects(self.path.boundingBox) else { return }
-
-        drawBorder(in: context, zoomScale: zoomScale)
-        drawFill(in: context, zoomScale: zoomScale)
-//        drawGradient(in: context, zoomScale: zoomScale)
-        drawIcons(in: context, zoomScale: zoomScale, mapRect: mapRect)
-    }
-
-    func drawBorder(in context: CGContext, zoomScale: MKZoomScale) {
-        guard let strokeColor else { return }
         let borderWidth: CGFloat = self.lineWidth / zoomScale
-        
-        context.saveGState()
-        context.setLineWidth(borderWidth)
-        context.setLineJoin(self.lineJoin)
-        context.setLineCap(self.lineCap)
-        if let lineDashPattern {
-            let phase = self.lineDashPhase / zoomScale
-            let lineDashPattern = lineDashPattern.map { CGFloat($0.doubleValue / zoomScale) }
-            context.setLineDash(phase: phase, lengths: lineDashPattern)
-        }
-        context.setStrokeColor(strokeColor.cgColor)
-        context.addPath(self.path)
-        context.strokePath()
-        context.restoreGState()
-    }
-
-    func drawFill(in context: CGContext, zoomScale: MKZoomScale) {
-        guard let fillColor else { return }
         let fillWidth: CGFloat = abs(self.lineWidth - self.borderWidth) / zoomScale
+        let fillWidthSquared = pow(fillWidth, 2)
 
-        context.saveGState()
-        context.setLineWidth(fillWidth)
-        context.setLineJoin(self.lineJoin)
-        context.setLineCap(self.lineCap)
-        context.setStrokeColor(fillColor.cgColor)
-        context.addPath(self.path)
-        context.strokePath()
-        context.restoreGState()
-    }
+        let iconDistanceSquared: CGFloat = pow(self.arrowIconDistance / zoomScale, 2)
+        var iconDrawRect = NSRect(origin: .zero, size: CGSize(width: fillWidth, height: fillWidth))
+        let iconImage = arrowIcon?.cgImage(forProposedRect: &iconDrawRect, context: .current, hints: nil)
 
-    func drawGradient(in context: CGContext, zoomScale: MKZoomScale) {
-        let fillWidth: CGFloat = abs(self.lineWidth - self.borderWidth) / zoomScale
-        
-        let mapPoints = self.gradientPolyline.points()
-        var prevMapPoint: MKMapPoint?
-        var prevColor: CGColor?
-        for index in 0..<self.gradientPolyline.pointCount - 1 {
-            let currentMapPoint = mapPoints[index]
-            let currentColor = gradientPolyline.getHue(from: index)
-            guard let unwrapedPrevMapPoint = prevMapPoint, let unwrapedPrevColor = prevColor else {
-                prevMapPoint = currentMapPoint
-                prevColor = currentColor
-                continue
-            }
-
+        var index = 0
+        var prevIndex = 0
+        var prevPrevIndex = 0
+        var prevPoint = CGPoint.zero
+        var prevPrevPoint = CGPoint.zero
+        var prevPath: CGPath?
+        var prevIconPoint = CGPoint.zero
+        self.path.applyWithBlock { element in
             defer {
-                prevMapPoint = currentMapPoint
-                prevColor = currentColor
+                index += 1
             }
 
-            let startPoint = self.point(for: unwrapedPrevMapPoint)
-            let endPoint = self.point(for: currentMapPoint)
+            let currentPoint = element.pointee.points.pointee
 
-            context.saveGState()
-            let path = CGMutablePath()
-            path.move(to: startPoint)
-            path.addLine(to: endPoint)
-            context.setLineWidth(fillWidth)
-            context.setLineJoin(self.lineJoin)
-            context.setLineCap(self.lineCap)
-            context.addPath(path)
-
-
-            let colors = [unwrapedPrevColor, currentColor] as CFArray
-            let gradient = CGGradient(colorsSpace: nil, colors: colors, locations: [0, 1])
-            context.replacePathWithStrokedPath()
-            context.clip()
-            context.drawLinearGradient(gradient!, start: startPoint, end: endPoint, options: [.drawsBeforeStartLocation, .drawsAfterEndLocation])
-            context.restoreGState()
-        }
-    }
-
-    func drawIcons(in context: CGContext, zoomScale: MKZoomScale, mapRect: MKMapRect) {
-        guard self.gradientPolyline.pointCount > 2 else { return }
-        guard let arrowIcon else { return }
-
-        let fillWidth: CGFloat = abs(self.lineWidth - self.borderWidth) / zoomScale
-        let distance: CGFloat = self.arrowIconDistance / zoomScale
-        var drawRect = NSRect(origin: .zero, size: CGSize(width: fillWidth, height: fillWidth))
-        guard let cgImage = arrowIcon.cgImage(forProposedRect: &drawRect, context: .current, hints: nil) else { return }
-
-        let mapPoints = self.gradientPolyline.points()
-        var prevMapPoint: MKMapPoint?
-        for index in 0..<self.gradientPolyline.pointCount - 1 {
-            let currentMapPoint = mapPoints[index]
-            guard let unwrapedPrevMapPoint = prevMapPoint else {
-                prevMapPoint = currentMapPoint
-                continue
-            }
-
-            let startPoint = self.point(for: unwrapedPrevMapPoint)
-            let endPoint = self.point(for: currentMapPoint)
-            let distanceSquared = CGPointDistanceSquared(from: startPoint, to: endPoint)
-
-            if distanceSquared > distance * distance {
-                let bearing = atan2(endPoint.y - startPoint.y, endPoint.x - startPoint.x)
-                let scaleTransform = CGAffineTransform(scaleX: 1, y: -1)
-                let rotateTransform = scaleTransform.rotated(by: -bearing)
-                let transformed = startPoint.applying(rotateTransform)
-                let newPoint = CGPoint(x: transformed.x - drawRect.midX, y: transformed.y - drawRect.midY)
+            switch element.pointee.type {
+            case .moveToPoint:
+                prevPoint = currentPoint
+            case .addLineToPoint:
+                let distanceSquared = CGPointDistanceSquared(from: prevPoint, to: currentPoint)
                 context.saveGState()
-                context.scaleBy(x: 1, y: -1)
-                context.rotate(by: -bearing)
-                context.setBlendMode(.luminosity)
-                context.setAlpha(0.9)
-                context.draw(cgImage, in: NSRect(origin: newPoint, size: drawRect.size))
+                context.setLineJoin(.round)
+                context.setLineCap(.round)
+
+                // Create path
+                let path = CGMutablePath()
+                path.move(to: prevPoint)
+                path.addLine(to: currentPoint)
+                path.closeSubpath()
+
+                // Filtering part of a path to fix border overlap on a fill
+                if distanceSquared > fillWidthSquared {
+                    // Drawing border
+                    if let strokeColor {
+                        context.addPath(path)
+                        context.setLineWidth(borderWidth)
+                        context.setStrokeColor(strokeColor.cgColor)
+                        context.strokePath()
+                    }
+
+                    // Drawing fill
+                    // Fill is drawn on top of the previous path to prevent next border from overlapping fill
+                    if let prevPath, let fillColor, !gradient {
+                        context.addPath(prevPath)
+                        context.setLineWidth(fillWidth)
+                        context.setStrokeColor(fillColor.cgColor)
+                        context.strokePath()
+                    }
+
+                    // Draw gradient
+                    // Gradient is drawn on top of the previous path to prevent next border from overlapping gradient
+                    if let prevPath, gradient {
+                        let prevPrevColor = NSColor(hue: gradientPolyline.hues[prevPrevIndex], saturation: 0.9, brightness: 0.9, alpha: 1).cgColor
+                        let prevColor = NSColor(hue: gradientPolyline.hues[prevIndex], saturation: 0.9, brightness: 0.9, alpha: 1).cgColor
+                        let colors = [prevPrevColor, prevColor] as CFArray
+                        let gradient = CGGradient(colorsSpace: nil, colors: colors, locations: [0, 1])
+
+                        context.addPath(prevPath)
+                        context.setLineWidth(fillWidth)
+                        context.replacePathWithStrokedPath()
+                        context.clip()
+                        context.drawLinearGradient(gradient!, start: prevPrevPoint, end: prevPoint, options: [.drawsBeforeStartLocation, .drawsAfterEndLocation])
+                        context.resetClip()
+                    }
+
+                    prevPrevIndex = prevIndex
+                    prevIndex = index
+                    prevPrevPoint = prevPoint
+                    prevPoint = currentPoint
+                    prevPath = path
+                }
+
+                // Drawing icons
+                // Icons is drawn on top of the previous path to prevent next border and fill from overlapping icon
+                if let iconImage {
+                    let distanceSquared = CGPointDistanceSquared(from: prevIconPoint, to: prevPoint)
+                    if distanceSquared > iconDistanceSquared {
+                        let bearing = atan2(prevPoint.y - prevIconPoint.y, prevPoint.x - prevIconPoint.x) // TODO: fix angle calculation
+                        let scaleTransform = CGAffineTransform(scaleX: 1, y: -1)
+                        let rotateTransform = scaleTransform.rotated(by: -bearing)
+                        let transformed = prevIconPoint.applying(rotateTransform)
+                        let newPoint = CGPoint(x: transformed.x - iconDrawRect.midX, y: transformed.y - iconDrawRect.midY)
+                        context.scaleBy(x: 1, y: -1)
+                        context.rotate(by: -bearing)
+                        if !gradient {
+                            context.setBlendMode(.difference)
+                        }
+                        context.draw(iconImage, in: NSRect(origin: newPoint, size: iconDrawRect.size))
+                        prevIconPoint = prevPoint
+                    }
+                }
+
                 context.restoreGState()
-                prevMapPoint = currentMapPoint
+            case .addQuadCurveToPoint: break
+            case .addCurveToPoint: break
+            case .closeSubpath: break
+            @unknown default: break
             }
         }
     }
