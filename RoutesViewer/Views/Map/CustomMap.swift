@@ -94,14 +94,18 @@ extension CustomCocoaMap: MKMapViewDelegate {
 
         if let overlay = overlay as? GradientPolyline {
             let renderer = GradidentPolylineRenderer(gradientPolyline: overlay)
-            renderer.strokeColor = .black
+            let fillColor = (selectedTrack?.style.color).flatMap { NSColor(hue: $0.hueComponent, saturation: $0.saturationComponent, brightness: $0.brightnessComponent, alpha: 1) }
             renderer.lineCap = .round
             renderer.lineJoin = .round
             renderer.lineWidth = 10
-            renderer.showBorder = true
+
+            renderer.strokeColor = .black
             renderer.borderWidth = 2
+
+            renderer.fillColor = fillColor
             renderer.arrowIcon = NSImage(named: "arrow")
             renderer.arrowIconDistance = 20
+//            renderer.alpha = selectedTrack?.style.color.alphaComponent ?? 1
             return renderer
         }
 

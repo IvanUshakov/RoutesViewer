@@ -17,7 +17,7 @@ struct ContentView: View {
         } content: {
             SidebarView(documentStorage: documentStorage)
         } detail: {
-            MapView(documentStorage: documentStorage)
+            CustomMap(documentStorage: documentStorage)
         }
     }
 }

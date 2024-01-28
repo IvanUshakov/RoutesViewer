@@ -38,10 +38,8 @@ extension GradientPolyline {
 }
 
 class GradidentPolylineRenderer: MKPolylineRenderer {
-    var showBorder: Bool = false
-    var borderColor: NSColor = .black
     var borderWidth: CGFloat = 1
-
+    
     var arrowIcon: NSImage?
     var arrowIconDistance: CGFloat = 70
 
@@ -56,13 +54,13 @@ class GradidentPolylineRenderer: MKPolylineRenderer {
         guard rect(for: mapRect).intersects(self.path.boundingBox) else { return }
 
         drawBorder(in: context, zoomScale: zoomScale)
-//        drawFill(in: context, zoomScale: zoomScale)
-        drawGradient(in: context, zoomScale: zoomScale)
+        drawFill(in: context, zoomScale: zoomScale)
+//        drawGradient(in: context, zoomScale: zoomScale)
         drawIcons(in: context, zoomScale: zoomScale, mapRect: mapRect)
     }
 
     func drawBorder(in context: CGContext, zoomScale: MKZoomScale) {
-        guard showBorder else { return }
+        guard let strokeColor else { return }
         let borderWidth: CGFloat = self.lineWidth / zoomScale
         
         context.saveGState()
@@ -74,20 +72,21 @@ class GradidentPolylineRenderer: MKPolylineRenderer {
             let lineDashPattern = lineDashPattern.map { CGFloat($0.doubleValue / zoomScale) }
             context.setLineDash(phase: phase, lengths: lineDashPattern)
         }
-        context.setStrokeColor(borderColor.cgColor)
+        context.setStrokeColor(strokeColor.cgColor)
         context.addPath(self.path)
         context.strokePath()
         context.restoreGState()
     }
 
     func drawFill(in context: CGContext, zoomScale: MKZoomScale) {
+        guard let fillColor else { return }
         let fillWidth: CGFloat = abs(self.lineWidth - self.borderWidth) / zoomScale
-       
+
         context.saveGState()
         context.setLineWidth(fillWidth)
         context.setLineJoin(self.lineJoin)
         context.setLineCap(self.lineCap)
-        context.setStrokeColor(NSColor.red.cgColor)
+        context.setStrokeColor(fillColor.cgColor)
         context.addPath(self.path)
         context.strokePath()
         context.restoreGState()
