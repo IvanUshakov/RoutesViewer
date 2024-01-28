@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		171EA3512B66785F00315157 /* ColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171EA3502B66785F00315157 /* ColorPicker.swift */; };
 		1778AB482B51FDE000B939C5 /* DocumentStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1778AB472B51FDE000B939C5 /* DocumentStorage.swift */; };
 		1778AB4B2B51FE0B00B939C5 /* UTType+gpx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1778AB4A2B51FE0B00B939C5 /* UTType+gpx.swift */; };
 		1778AB4D2B51FE1D00B939C5 /* RouteDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1778AB4C2B51FE1D00B939C5 /* RouteDocument.swift */; };
@@ -65,6 +66,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		171EA3502B66785F00315157 /* ColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPicker.swift; sourceTree = "<group>"; };
 		1778AB472B51FDE000B939C5 /* DocumentStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentStorage.swift; sourceTree = "<group>"; };
 		1778AB4A2B51FE0B00B939C5 /* UTType+gpx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UTType+gpx.swift"; sourceTree = "<group>"; };
 		1778AB4C2B51FE1D00B939C5 /* RouteDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteDocument.swift; sourceTree = "<group>"; };
@@ -238,6 +240,7 @@
 			isa = PBXGroup;
 			children = (
 				17B3BDE42B4F51BD00D94581 /* EditTrackMetadataView.swift */,
+				171EA3502B66785F00315157 /* ColorPicker.swift */,
 			);
 			path = EditTrackMetadataView;
 			sourceTree = "<group>";
@@ -481,6 +484,7 @@
 				17C9D4982B5BF10300CCF143 /* Statistic.swift in Sources */,
 				17B3BDE62B4F51BD00D94581 /* EditTrackMetadataView.swift in Sources */,
 				1778AB7E2B5464FA00B939C5 /* DocumentView.swift in Sources */,
+				171EA3512B66785F00315157 /* ColorPicker.swift in Sources */,
 				17C9D4942B59C28800CCF143 /* StatisticCalculator.swift in Sources */,
 				17F013062B5C1B3500D31519 /* TileServer.swift in Sources */,
 				17B3BDB52B4F4D4400D94581 /* ContentView.swift in Sources */,

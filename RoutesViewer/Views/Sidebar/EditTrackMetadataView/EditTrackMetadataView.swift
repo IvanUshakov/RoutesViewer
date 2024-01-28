@@ -7,9 +7,24 @@
 
 import SwiftUI
 
+struct TrackStylePicker: View {
+    @Binding var color: NSColor
+
+    var body: some View {
+        VStack {
+            ColorPicker(color: $color)
+                .frame(width: 200, height: 100)
+        }
+        .padding(.normal)
+    }
+}
+
 struct EditTrackMetadataView: View {
     @Bindable var track: Track
     @State var date: Date = Date()
+
+    @State var showColorPicker: Bool = false
+    @State var color: NSColor = .blue
 
     var body: some View {
         VStack(spacing: .small) {
@@ -21,8 +36,21 @@ struct EditTrackMetadataView: View {
 
                 Spacer(minLength: .small)
 
-                ColorPicker(selection: $track.style.cgColor, supportsOpacity: true, label: {})
-                    .labelsHidden()
+                Button {
+                    showColorPicker.toggle()
+                } label: {
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(Color(nsColor: color))
+                        .frame(width: 40, height: 20)
+                }
+                .buttonStyle(.borderless)
+                .popover(isPresented: $showColorPicker) {
+                    VStack {
+                        ColorPicker(color: $color)
+                            .frame(width: 200, height: 100)
+                    }
+                    .padding(.normal)
+                }
             }
 
             if let date = track.date {
