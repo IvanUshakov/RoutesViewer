@@ -1,5 +1,5 @@
 //
-//  CustomMap.swift
+//  MapView.swift
 //  RoutesViewer
 //
 //  Created by Ivan Ushakov on 20.01.2024.
@@ -7,20 +7,19 @@
 
 import Foundation
 import Cocoa
-import SwiftUI
 import MapKit
 import MapCache
 
 @MainActor
-class CustomCocoaMap: NSView {
+class MapView: NSView {
     var mapView: MKMapView = .init()
     var cachedTileOverlay: CachedTileOverlay?
     var trackOverlay: GradientPolyline?
+    var trackOverlayRenderer: GradidentPolylineRenderer?
     var tileServerPopUpButton: NSPopUpButton = .init()
 
     var documentStorage: DocumentStorage
 
-    var position = MapCameraPosition.userLocation(fallback: .automatic)
     var tileServer: TileServer = .openTopoMapCZ {
         didSet {
             updateTileServer()
@@ -40,6 +39,12 @@ class CustomCocoaMap: NSView {
 
     private func renderCurrentTrack() {
         withObservationTracking {
+            guard self.selectedTrack !== documentStorage.selectedTrack else {
+                self.trackOverlayRenderer?.fillColor = selectedTrack?.style.color
+                self.trackOverlayRenderer?.setNeedsDisplay(.world)
+                return
+            }
+
             self.selectedTrack = documentStorage.selectedTrack
             guard let selectedTrack else {
                 return
@@ -80,20 +85,21 @@ class CustomCocoaMap: NSView {
     
 }
 
-extension CustomCocoaMap {
+extension MapView {
     @objc func tileServerDidChange(_ sender: NSSegmentedControl) {
         self.tileServer = TileServer.allCases[sender.indexOfSelectedItem]
     }
 }
 
-extension CustomCocoaMap: MKMapViewDelegate {
+extension MapView: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         if let overlay = overlay as? CachedTileOverlay {
             return mapView.mapCacheRenderer(forOverlay: overlay)
         }
 
         if let overlay = overlay as? GradientPolyline {
-            let renderer = GradidentPolylineRenderer(gradientPolyline: overlay)
+            let renderer = trackOverlayRenderer ?? .init(gradientPolyline: overlay)
+            self.trackOverlayRenderer = renderer
             let fillColor = (selectedTrack?.style.color).flatMap { NSColor(hue: $0.hueComponent, saturation: $0.saturationComponent, brightness: $0.brightnessComponent, alpha: 1) }
             renderer.lineCap = .round
             renderer.lineJoin = .round
@@ -115,7 +121,7 @@ extension CustomCocoaMap: MKMapViewDelegate {
     }
 }
 
-extension CustomCocoaMap {
+extension MapView {
 
     func addMapView() {
         self.mapView.translatesAutoresizingMaskIntoConstraints = false
@@ -171,16 +177,4 @@ extension CustomCocoaMap {
         return config
     }
 
-}
-
-struct CustomMap: NSViewRepresentable {
-    typealias NSViewType = CustomCocoaMap
-
-    var documentStorage: DocumentStorage
-
-    func makeNSView(context: Context) -> CustomCocoaMap {
-        CustomCocoaMap(documentStorage: documentStorage)
-    }
-
-    func updateNSView(_ nsView: CustomCocoaMap, context: Context) {}
 }
