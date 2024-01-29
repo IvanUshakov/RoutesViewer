@@ -98,13 +98,15 @@ extension CustomCocoaMap: MKMapViewDelegate {
             renderer.lineCap = .round
             renderer.lineJoin = .round
             renderer.lineWidth = 10
+            renderer.fillColor = fillColor
 
             renderer.strokeColor = .black
             renderer.borderWidth = 2
+            renderer.drawBorder = true
 
-            renderer.fillColor = fillColor
-            renderer.arrowIcon = NSImage(named: "arrow")
             renderer.arrowIconDistance = 20
+            renderer.drawArrows = true
+
             renderer.alpha = selectedTrack?.style.color.alphaComponent ?? 1
             return renderer
         }

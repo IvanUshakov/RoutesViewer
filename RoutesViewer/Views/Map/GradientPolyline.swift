@@ -34,10 +34,13 @@ extension GradientPolyline {
 class GradidentPolylineRenderer: MKPolylineRenderer {
     let gradientPolyline: GradientPolyline
 
+    var drawBorder: Bool = false
     var borderWidth: CGFloat = 1
-    var arrowIcon: NSImage?
+
+    var drawArrows: Bool = false
     var arrowIconDistance: CGFloat = 70
-    var gradient: Bool = true // TODO: rename
+    
+    var drawGradient: Bool = false
 
     init(gradientPolyline: GradientPolyline) {
         self.gradientPolyline = gradientPolyline
@@ -49,10 +52,8 @@ class GradidentPolylineRenderer: MKPolylineRenderer {
         let borderWidth: CGFloat = self.lineWidth / zoomScale
         let fillWidth: CGFloat = abs(self.lineWidth - self.borderWidth) / zoomScale
         let fillWidthSquared = pow(fillWidth, 2)
-
-        let iconDistanceSquared: CGFloat = pow(self.arrowIconDistance / zoomScale, 2)
-        var iconDrawRect = NSRect(origin: .zero, size: CGSize(width: fillWidth, height: fillWidth))
-        let iconImage = arrowIcon?.cgImage(forProposedRect: &iconDrawRect, context: .current, hints: nil)
+        let arrowDistanceSquared: CGFloat = pow(self.arrowIconDistance / zoomScale, 2)
+        let arrowPath = arrowPath(size: fillWidth)
 
         var index = 0
         var prevIndex = 0
@@ -86,7 +87,7 @@ class GradidentPolylineRenderer: MKPolylineRenderer {
                 // Filtering part of a path to fix border overlap on a fill
                 if distanceSquared > fillWidthSquared {
                     // Drawing border
-                    if let strokeColor {
+                    if let strokeColor, drawBorder {
                         context.addPath(path)
                         context.setLineWidth(borderWidth)
                         context.setStrokeColor(strokeColor.cgColor)
@@ -95,7 +96,7 @@ class GradidentPolylineRenderer: MKPolylineRenderer {
 
                     // Drawing fill
                     // Fill is drawn on top of the previous path to prevent next border from overlapping fill
-                    if let prevPath, let fillColor, !gradient {
+                    if let prevPath, let fillColor, !drawGradient {
                         context.addPath(prevPath)
                         context.setLineWidth(fillWidth)
                         context.setStrokeColor(fillColor.cgColor)
@@ -104,7 +105,7 @@ class GradidentPolylineRenderer: MKPolylineRenderer {
 
                     // Draw gradient
                     // Gradient is drawn on top of the previous path to prevent next border from overlapping gradient
-                    if let prevPath, gradient {
+                    if let prevPath, drawGradient {
                         let prevPrevColor = NSColor(hue: gradientPolyline.hues[prevPrevIndex], saturation: 0.9, brightness: 0.9, alpha: 1).cgColor
                         let prevColor = NSColor(hue: gradientPolyline.hues[prevIndex], saturation: 0.9, brightness: 0.9, alpha: 1).cgColor
                         let colors = [prevPrevColor, prevColor] as CFArray
@@ -127,20 +128,18 @@ class GradidentPolylineRenderer: MKPolylineRenderer {
 
                 // Drawing icons
                 // Icons is drawn on top of the previous path to prevent next border and fill from overlapping icon
-                if let iconImage {
+                if drawArrows {
                     let distanceSquared = CGPointDistanceSquared(from: prevIconPoint, to: prevPoint)
-                    if distanceSquared > iconDistanceSquared {
-                        let bearing = atan2(prevPoint.y - prevIconPoint.y, prevPoint.x - prevIconPoint.x) // TODO: fix angle calculation
-                        let scaleTransform = CGAffineTransform(scaleX: 1, y: -1)
-                        let rotateTransform = scaleTransform.rotated(by: -bearing)
-                        let transformed = prevIconPoint.applying(rotateTransform)
-                        let newPoint = CGPoint(x: transformed.x - iconDrawRect.midX, y: transformed.y - iconDrawRect.midY)
-                        context.scaleBy(x: 1, y: -1)
-                        context.rotate(by: -bearing)
-                        if !gradient {
+                    if distanceSquared > arrowDistanceSquared {
+                        let angle = atan2(currentPoint.y - prevIconPoint.y, currentPoint.x - prevIconPoint.x)
+                        context.translateBy(x: prevIconPoint.x, y: prevIconPoint.y)
+                        context.rotate(by: angle)
+                        context.addPath(arrowPath)
+                        context.setFillColor(.white)
+                        if !drawGradient {
                             context.setBlendMode(.difference)
                         }
-                        context.draw(iconImage, in: NSRect(origin: newPoint, size: iconDrawRect.size))
+                        context.fillPath()
                         prevIconPoint = prevPoint
                     }
                 }
@@ -152,6 +151,19 @@ class GradidentPolylineRenderer: MKPolylineRenderer {
             @unknown default: break
             }
         }
+    }
+
+    func arrowPath(size: CGFloat) -> CGPath {
+        let arrowPath = CGMutablePath()
+        arrowPath.move(to: .init(x: -size / 2, y: -size / 2))
+        arrowPath.addLine(to: .init(x: 0, y: 0))
+        arrowPath.addLine(to: .init(x: -size / 2, y: size / 2))
+
+        arrowPath.addLine(to: .init(x: size / 2, y: size / 2))
+        arrowPath.addLine(to: .init(x: size, y: 0))
+        arrowPath.addLine(to: .init(x: size / 2, y: -size / 2))
+        arrowPath.closeSubpath()
+        return arrowPath
     }
 
     func CGPointDistanceSquared(from: CGPoint, to: CGPoint) -> CGFloat {
