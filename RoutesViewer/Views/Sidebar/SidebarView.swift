@@ -13,15 +13,8 @@ struct SidebarView: View {
     var body: some View {
         if let track = documentStorage.selectedTrack {
             ScrollView {
-                contentView(track: track)
+                StatisticView(track: track)
             }
-        }
-    }
-
-    func contentView(track: Track) -> some View {
-        VStack(spacing: .large) {
-            EditTrackMetadataView(track: track)
-            StatisticView(track: track)
         }
     }
 }

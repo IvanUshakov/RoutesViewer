@@ -11,9 +11,10 @@ struct MapViewRepresentable: NSViewRepresentable {
     typealias NSViewType = MapView
 
     var documentStorage: DocumentStorage
+    var settings: Settings
 
     func makeNSView(context: Context) -> MapView {
-        MapView(documentStorage: documentStorage)
+        MapView(documentStorage: documentStorage, settings: settings)
     }
 
     func updateNSView(_ nsView: MapView, context: Context) {}

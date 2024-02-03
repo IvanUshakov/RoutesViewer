@@ -16,25 +16,38 @@ class MapView: NSView {
     var cachedTileOverlay: CachedTileOverlay?
     var trackOverlay: GradientPolyline?
     var trackOverlayRenderer: GradidentPolylineRenderer?
-    var tileServerPopUpButton: NSPopUpButton = .init()
 
     var documentStorage: DocumentStorage
-
-    var tileServer: TileServer = .openTopoMapCZ {
-        didSet {
-            updateTileServer()
-        }
-    }
+    var settings: Settings
 
     var selectedTrack: Track?
 
-    init(documentStorage: DocumentStorage) {
+    init(documentStorage: DocumentStorage, settings: Settings) {
         self.documentStorage = documentStorage
+        self.settings = settings
         super.init(frame: .zero)
         addMapView()
-        addTileServerPopUpButton()
-
+        renderTileServer()
         renderCurrentTrack()
+    }
+
+    private func renderTileServer() {
+        withObservationTracking {
+            if let cachedTileOverlay {
+                mapView.removeOverlay(cachedTileOverlay)
+            }
+
+            if let mapConfiguration = settings.tileServer.mapConfiguration {
+                mapView.preferredConfiguration = mapConfiguration
+            } else {
+                let mapCache = MapCache(withConfig: mapCacheConfig(from: settings.tileServer))
+                cachedTileOverlay = mapView.useCache(mapCache)
+            }
+        } onChange: { [weak self] in
+            Task { @MainActor [weak self] in
+                self?.renderTileServer()
+            }
+        }
     }
 
     private func renderCurrentTrack() {
@@ -110,12 +123,6 @@ class MapView: NSView {
     
 }
 
-extension MapView {
-    @objc func tileServerDidChange(_ sender: NSSegmentedControl) {
-        self.tileServer = TileServer.allCases[sender.indexOfSelectedItem]
-    }
-}
-
 extension MapView: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         if let overlay = overlay as? CachedTileOverlay {
@@ -162,34 +169,6 @@ extension MapView {
         self.mapView.showsCompass = true
         self.mapView.showsZoomControls = true
         self.mapView.showsPitchControl = true
-
-        updateTileServer()
-    }
-
-    func updateTileServer() {
-        if let cachedTileOverlay {
-            mapView.removeOverlay(cachedTileOverlay)
-        }
-
-        if let mapConfiguration = tileServer.mapConfiguration {
-            mapView.preferredConfiguration = mapConfiguration
-        } else {
-            let mapCache = MapCache(withConfig: mapCacheConfig(from: tileServer))
-            cachedTileOverlay = mapView.useCache(mapCache)
-        }
-    }
-
-    func addTileServerPopUpButton() {
-        tileServerPopUpButton.frame = NSRect(x: 8, y: 8, width: 145, height: 25)
-        for server in TileServer.allCases {
-            tileServerPopUpButton.addItem(withTitle: server.name)
-        }
-        tileServerPopUpButton.selectItem(at: TileServer.allCases.firstIndex(of: tileServer) ?? 0)
-        tileServerPopUpButton.wantsLayer = true
-        tileServerPopUpButton.layer?.opacity = 0.8
-        tileServerPopUpButton.target = self
-        tileServerPopUpButton.action = #selector(tileServerDidChange(_:))
-        self.addSubview(tileServerPopUpButton)
     }
 
     func mapCacheConfig(from tileServer: TileServer) -> MapCacheConfig {
