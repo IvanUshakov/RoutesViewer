@@ -15,10 +15,8 @@ extension UserDefaults {
     }
 
     func value<T: Decodable>(_ type: T.Type, forKey key: String) -> T? {
-        if let data = object(forKey: key) as? Data,
-           let value = try? JSONDecoder().decode(type, from: data) {
-            return value
-        }
-        return nil
+        guard let data = object(forKey: key) as? Data else { return nil }
+        guard let value = try? JSONDecoder().decode(type, from: data) else { return nil }
+        return value
     }
 }

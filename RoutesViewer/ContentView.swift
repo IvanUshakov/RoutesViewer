@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     var documentStorage: DocumentStorage
-    var settings: Settings = .init()
+    var settings: Settings
 
     var body: some View {
         NavigationSplitView {
@@ -31,5 +31,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView(documentStorage: .init())
+    ContentView(documentStorage: .init(), settings: .init())
 }

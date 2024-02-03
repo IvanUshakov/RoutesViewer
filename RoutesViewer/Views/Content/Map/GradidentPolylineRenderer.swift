@@ -24,6 +24,8 @@ class GradidentPolylineRenderer: MKPolylineRenderer {
         super.init(overlay: gradientPolyline)
     }
 
+    // TODO: draw fill and gradient for last point
+    // TODO: fix drawing first arrow
     override func draw(_ mapRect: MKMapRect, zoomScale: MKZoomScale, in context: CGContext) {
         guard rect(for: mapRect).intersects(self.path.boundingBox) else { return }
         let borderWidth: CGFloat = self.lineWidth / zoomScale
@@ -132,20 +134,21 @@ class GradidentPolylineRenderer: MKPolylineRenderer {
     }
 
     func arrowPath(size: CGFloat) -> CGPath {
+        let halfSize = size / 2
         let arrowPath = CGMutablePath()
-        arrowPath.move(to: .init(x: -size / 2, y: -size / 2))
+        arrowPath.move(to: .init(x: -halfSize, y: -halfSize))
         arrowPath.addLine(to: .init(x: 0, y: 0))
-        arrowPath.addLine(to: .init(x: -size / 2, y: size / 2))
+        arrowPath.addLine(to: .init(x: -halfSize, y: halfSize))
 
-        arrowPath.addLine(to: .init(x: size / 2, y: size / 2))
+        arrowPath.addLine(to: .init(x: halfSize, y: halfSize))
         arrowPath.addLine(to: .init(x: size, y: 0))
-        arrowPath.addLine(to: .init(x: size / 2, y: -size / 2))
+        arrowPath.addLine(to: .init(x: halfSize, y: -halfSize))
         arrowPath.closeSubpath()
         return arrowPath
     }
 
     func CGPointDistanceSquared(from: CGPoint, to: CGPoint) -> CGFloat {
-        return (from.x - to.x) * (from.x - to.x) + (from.y - to.y) * (from.y - to.y)
+        return pow(from.x - to.x, 2) + pow(from.y - to.y, 2)
     }
 }
 
