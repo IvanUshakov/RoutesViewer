@@ -17,7 +17,10 @@ struct ContentView: View {
         } content: {
             SidebarView(documentStorage: documentStorage)
         } detail: {
-            CustomMap(documentStorage: documentStorage)
+            VStack {
+                MapViewRepresentable(documentStorage: documentStorage)
+                GraphicsView(documentStorage: documentStorage)
+            }
         }
     }
 }

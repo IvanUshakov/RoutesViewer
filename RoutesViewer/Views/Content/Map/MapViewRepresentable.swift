@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CustomMap: NSViewRepresentable {
+struct MapViewRepresentable: NSViewRepresentable {
     typealias NSViewType = MapView
 
     var documentStorage: DocumentStorage

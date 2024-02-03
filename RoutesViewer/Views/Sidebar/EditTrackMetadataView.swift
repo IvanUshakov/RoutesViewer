@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct EditTrackMetadataView: View {
     @Bindable var track: Track
     @State var date: Date = Date()

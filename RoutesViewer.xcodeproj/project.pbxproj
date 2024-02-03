@@ -35,6 +35,7 @@
 		1778AB7B2B5464C600B939C5 /* DirectoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1778AB7A2B5464C600B939C5 /* DirectoryView.swift */; };
 		1778AB7E2B5464FA00B939C5 /* DocumentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1778AB7D2B5464FA00B939C5 /* DocumentView.swift */; };
 		1778AB802B54651300B939C5 /* TrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1778AB7F2B54651300B939C5 /* TrackView.swift */; };
+		178318692B6E366800CAC23A /* GraphicsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178318682B6E366800CAC23A /* GraphicsView.swift */; };
 		17B3BDB32B4F4D4400D94581 /* RoutesViewerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B3BDB22B4F4D4400D94581 /* RoutesViewerApp.swift */; };
 		17B3BDB52B4F4D4400D94581 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B3BDB42B4F4D4400D94581 /* ContentView.swift */; };
 		17B3BDB72B4F4D4500D94581 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17B3BDB62B4F4D4500D94581 /* Assets.xcassets */; };
@@ -100,6 +101,7 @@
 		1778AB7A2B5464C600B939C5 /* DirectoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryView.swift; sourceTree = "<group>"; };
 		1778AB7D2B5464FA00B939C5 /* DocumentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentView.swift; sourceTree = "<group>"; };
 		1778AB7F2B54651300B939C5 /* TrackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackView.swift; sourceTree = "<group>"; };
+		178318682B6E366800CAC23A /* GraphicsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphicsView.swift; sourceTree = "<group>"; };
 		17B3BDAF2B4F4D4400D94581 /* RoutesViewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RoutesViewer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		17B3BDB22B4F4D4400D94581 /* RoutesViewerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutesViewerApp.swift; sourceTree = "<group>"; };
 		17B3BDB42B4F4D4400D94581 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -200,7 +202,7 @@
 			children = (
 				1778AB422B51FCDC00B939C5 /* FilesTree */,
 				17B3BDE82B4F53AC00D94581 /* Sidebar */,
-				17B3BDE92B4F53B300D94581 /* Map */,
+				17B3BDE92B4F53B300D94581 /* Content */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -268,6 +270,26 @@
 				171EA35F2B66AB6100315157 /* ColorPalateView.swift */,
 			);
 			path = TrackStyle;
+			sourceTree = "<group>";
+		};
+		178318622B6E360D00CAC23A /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				17F013072B5C5E8800D31519 /* GradientPolyline.swift */,
+				171EA3652B68432400315157 /* GradidentPolylineRenderer.swift */,
+				171EA3672B6843A000315157 /* MapViewRepresentable.swift */,
+				17F013032B5C100700D31519 /* MapView.swift */,
+				17F013052B5C1B3500D31519 /* TileServer.swift */,
+			);
+			path = Map;
+			sourceTree = "<group>";
+		};
+		178318632B6E361700CAC23A /* Graphics */ = {
+			isa = PBXGroup;
+			children = (
+				178318682B6E366800CAC23A /* GraphicsView.swift */,
+			);
+			path = Graphics;
 			sourceTree = "<group>";
 		};
 		17B3BDA62B4F4D4400D94581 = {
@@ -342,16 +364,13 @@
 			path = Sidebar;
 			sourceTree = "<group>";
 		};
-		17B3BDE92B4F53B300D94581 /* Map */ = {
+		17B3BDE92B4F53B300D94581 /* Content */ = {
 			isa = PBXGroup;
 			children = (
-				17F013072B5C5E8800D31519 /* GradientPolyline.swift */,
-				171EA3652B68432400315157 /* GradidentPolylineRenderer.swift */,
-				171EA3672B6843A000315157 /* MapViewRepresentable.swift */,
-				17F013032B5C100700D31519 /* MapView.swift */,
-				17F013052B5C1B3500D31519 /* TileServer.swift */,
+				178318622B6E360D00CAC23A /* Map */,
+				178318632B6E361700CAC23A /* Graphics */,
 			);
-			path = Map;
+			path = Content;
 			sourceTree = "<group>";
 		};
 		17C9D4922B59C27500CCF143 /* Statistics */ = {
@@ -521,6 +540,7 @@
 				171EA3532B66841500315157 /* TrackStylePicker.swift in Sources */,
 				171EA3622B66AB9D00315157 /* Array+chunked.swift in Sources */,
 				1778AB702B53051600B939C5 /* CoordinateRect.swift in Sources */,
+				178318692B6E366800CAC23A /* GraphicsView.swift in Sources */,
 				1778AB7B2B5464C600B939C5 /* DirectoryView.swift in Sources */,
 				1778AB592B5214CD00B939C5 /* URL+isDirectory.swift in Sources */,
 				171EA3602B66AB6100315157 /* ColorPalateView.swift in Sources */,
