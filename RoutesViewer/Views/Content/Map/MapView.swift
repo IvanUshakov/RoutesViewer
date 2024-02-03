@@ -57,6 +57,7 @@ class MapView: NSView {
                 self.trackOverlayRenderer?.fillColor = selectedTrack?.style.color
                 self.trackOverlayRenderer?.lineWidth = weight
                 self.trackOverlayRenderer?.arrowIconDistance = 3 * weight
+                self.trackOverlayRenderer?.drawGradient = settings.showTrackGradient
                 self.trackOverlayRenderer?.setNeedsDisplay(.world)
                 return
             }
@@ -133,10 +134,9 @@ extension MapView: MKMapViewDelegate {
             let renderer = trackOverlayRenderer ?? .init(gradientPolyline: overlay)
             self.trackOverlayRenderer = renderer
             let fillColor = (selectedTrack?.style.color).flatMap { NSColor(hue: $0.hueComponent, saturation: $0.saturationComponent, brightness: $0.brightnessComponent, alpha: 1) }
-            renderer.lineCap = .round
-            renderer.lineJoin = .round
             renderer.lineWidth = (selectedTrack?.style.weight).flatMap { CGFloat($0) } ?? 8
             renderer.fillColor = fillColor
+            renderer.drawGradient = settings.showTrackGradient
 
             renderer.strokeColor = .black
             renderer.borderWidth = 1
