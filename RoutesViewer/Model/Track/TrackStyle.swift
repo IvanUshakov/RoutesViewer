@@ -21,7 +21,7 @@ class TrackStyle {
     var color: NSColor
 
     init() {
-        self.weight = 4
+        self.weight = 8
         self.color = ColorPalate.shared.color()
     }
 }

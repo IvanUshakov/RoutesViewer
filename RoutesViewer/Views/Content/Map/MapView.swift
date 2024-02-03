@@ -40,7 +40,10 @@ class MapView: NSView {
     private func renderCurrentTrack() {
         withObservationTracking {
             guard self.selectedTrack?.id != documentStorage.selectedTrack?.id else {
+                let weight = (selectedTrack?.style.weight).flatMap { CGFloat($0) } ?? 8
                 self.trackOverlayRenderer?.fillColor = selectedTrack?.style.color
+                self.trackOverlayRenderer?.lineWidth = weight
+                self.trackOverlayRenderer?.arrowIconDistance = 3 * weight
                 self.trackOverlayRenderer?.setNeedsDisplay(.world)
                 return
             }
@@ -125,17 +128,16 @@ extension MapView: MKMapViewDelegate {
             let fillColor = (selectedTrack?.style.color).flatMap { NSColor(hue: $0.hueComponent, saturation: $0.saturationComponent, brightness: $0.brightnessComponent, alpha: 1) }
             renderer.lineCap = .round
             renderer.lineJoin = .round
-            renderer.lineWidth = 10
+            renderer.lineWidth = (selectedTrack?.style.weight).flatMap { CGFloat($0) } ?? 8
             renderer.fillColor = fillColor
 
             renderer.strokeColor = .black
-            renderer.borderWidth = 2
+            renderer.borderWidth = 1
             renderer.drawBorder = true
 
-            renderer.arrowIconDistance = 20
+            renderer.arrowIconDistance = 3 * renderer.lineWidth
             renderer.drawArrows = true
 
-            renderer.alpha = selectedTrack?.style.color.alphaComponent ?? 1
             return renderer
         }
 

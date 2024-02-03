@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TrackStylePicker: View {
     @Binding var color: NSColor
-    @State private var alpha: CGFloat = 1
+    @Binding var weight: Double
 
     var body: some View {
         VStack(spacing: .normal) {
@@ -17,43 +17,43 @@ struct TrackStylePicker: View {
                 .frame(height: 100)
 
             Divider()
-            alphaSliderView
-            Divider()
             ColorPalateView(color: $color)
+            Divider()
+            alphaSliderView
         }
         .padding(.normal)
     }
 
     var alphaSliderView: some View {
-        Slider(value: $alpha, in: 0...100) {
-            Text("Alpha: ")
-        } minimumValueLabel: {
-            Text("0")
-        } maximumValueLabel: {
-            Text("100")
+        VStack(spacing: .xsmall) {
+            HStack(spacing: .zero) {
+                Text("Weight: ")
+                Text(weight, format: .number)
+                    .frame(width: 16, alignment: .leading)
+            }
+            .frame(maxWidth: .infinity)
+            .font(.subheadline)
+
+            Slider(value: weightBinding, in: 4...20) {
+                Text("")
+            } minimumValueLabel: {
+                Text("4")
+            } maximumValueLabel: {
+                Text("20")
+            }
+            .labelsHidden()
         }
-        .onChange(of: color) {
-            self.color = NSColor(
-                hue: color.hueComponent,
-                saturation: color.saturationComponent,
-                brightness: color.brightnessComponent,
-                alpha: alpha / 100
-            )
-        }
-        .onChange(of: alpha) {
-            self.color = NSColor(
-                hue: color.hueComponent,
-                saturation: color.saturationComponent,
-                brightness: color.brightnessComponent,
-                alpha: alpha / 100
-            )
-        }
-        .onAppear {
-            alpha = color.alphaComponent * 100
+    }
+
+    var weightBinding: Binding<Double> {
+        .init {
+            Double(Int(weight))
+        } set: { newValue in
+            weight = newValue.rounded()
         }
     }
 }
 
 #Preview {
-    TrackStylePicker(color: .constant(.blue))
+    TrackStylePicker(color: .constant(.blue), weight: .constant(10))
 }

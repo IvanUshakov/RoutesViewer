@@ -32,7 +32,7 @@ struct EditTrackMetadataView: View {
                 }
                 .buttonStyle(.borderless)
                 .popover(isPresented: $showColorPicker) {
-                    TrackStylePicker(color: $track.style.color)
+                    TrackStylePicker(color: $track.style.color, weight: $track.style.weight)
                 }
             }
 
