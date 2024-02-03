@@ -39,7 +39,7 @@ class MapView: NSView {
 
     private func renderCurrentTrack() {
         withObservationTracking {
-            guard self.selectedTrack !== documentStorage.selectedTrack else {
+            guard self.selectedTrack?.id != documentStorage.selectedTrack?.id else {
                 self.trackOverlayRenderer?.fillColor = selectedTrack?.style.color
                 self.trackOverlayRenderer?.setNeedsDisplay(.world)
                 return
@@ -58,16 +58,16 @@ class MapView: NSView {
                 GradientPolyline.Point(coordinates: $0.coordinate, velocity: $0.speed ?? 0)
             }
 
+            self.trackOverlayRenderer = nil
             let polyline = GradientPolyline(points: points, maxVelocity: selectedTrack.statistic.maxSpeed ?? 0)
             self.mapView.addOverlay(polyline, level: .aboveLabels)
             self.trackOverlay = polyline
             if let coordinateRect = selectedTrack.coordinateRect {
-                self.mapView.setCamera(
+                self.mapView.setRegion(
                     .init(
-                        lookingAtCenter: coordinateRect.center,
-                        fromDistance: 30000,
-                        pitch: 0,
-                        heading: .zero
+                        center: coordinateRect.center,
+                        latitudinalMeters: distance(from: coordinateRect.bottomRightCoordinate, to: coordinateRect.topLeftCoordinate),
+                        longitudinalMeters: distance(from: coordinateRect.bottomRightCoordinate, to: coordinateRect.topLeftCoordinate)
                     ),
                     animated: false
                 )
@@ -77,6 +77,28 @@ class MapView: NSView {
                 self?.renderCurrentTrack()
             }
         }
+    }
+
+    static let earthRadius: Double = 6_371_000 // in m
+    func distance(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D, radius: Double = MapView.earthRadius) -> Double {
+        func haversin(_ angle: Double) -> Double {
+            return (1 - cos(angle)) / 2
+        }
+
+        func ahaversin(_ angle: Double) -> Double {
+            return 2 * asin(sqrt(angle))
+        }
+
+        func degreesToRadians(_ angle: Double) -> Double {
+            return (angle / 360) * 2 * .pi
+        }
+
+        let lat1 = degreesToRadians(from.latitude)
+        let lon1 = degreesToRadians(from.longitude)
+        let lat2 = degreesToRadians(to.latitude)
+        let lon2 = degreesToRadians(to.longitude)
+
+        return radius * ahaversin(haversin(lat2 - lat1) + cos(lat1) * cos(lat2) * haversin(lon2 - lon1))
     }
 
     required init?(coder: NSCoder) {

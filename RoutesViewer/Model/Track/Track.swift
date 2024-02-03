@@ -48,14 +48,9 @@ final class Track: Identifiable {
     }
 
     static func coordinateRect(from points: [CLLocationCoordinate2D]) -> CoordinateRect? {
-        if points.count == 0 {
-            return nil
-        } else if points.count == 1 {
-            return .init(topLeftCoordinate: points[0], bottomRightCoordinate: points[0])
-        } else {
-            return points.reduce(into: .init(topLeftCoordinate: points[0], bottomRightCoordinate: points[1])) {
-                $0.extend(location: $1)
-            }
+        guard points.count > 2 else { return nil }
+        return points.reduce(into: .init(topLeftCoordinate: points[0], bottomRightCoordinate: points[1])) {
+            $0.extend(location: $1)
         }
     }
 }
