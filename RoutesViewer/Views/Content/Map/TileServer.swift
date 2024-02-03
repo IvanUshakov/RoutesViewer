@@ -8,67 +8,83 @@
 import Foundation
 import MapKit
 
-enum TileServer: CaseIterable {
-    case appleStandard
-    case appleImagery
-    case appleHybrid
-    case openStreetMap
-    case openTopoMap
-    case openTopoMapCZ
+struct TileServer: Hashable {
+    let id: UUID
+    let name: String
+    let templateUrl: String
+    let subdomains: [String]
+    let maximumZ: Int
+    let minimumZ: Int
 
-    var mapConfiguration: MKMapConfiguration? {
-        switch self {
-        case .appleStandard: MKStandardMapConfiguration(elevationStyle: .flat, emphasisStyle: .default)
-        case .appleImagery: MKImageryMapConfiguration(elevationStyle: .flat)
-        case .appleHybrid: MKHybridMapConfiguration(elevationStyle: .flat)
-        default: nil
-        }
-    }
+    // Standart map styles
+    let mapConfiguration: MKMapConfiguration?
 
-    var name: String {
-        switch self {
-        case .appleStandard: "Apple Mapkit Standard"
-        case .appleImagery: "Apple Mapkit Imagery"
-        case .appleHybrid: "Apple Mapkit Hybrid"
-        case .openStreetMap: "Open Street Map"
-        case .openTopoMap: "OpenTopoMap"
-        case .openTopoMapCZ: "OpenTopoMap CZ"
-        }
-    }
+    static var allCases = [
+        Self.appleStandard,
+        Self.appleImagery,
+        Self.appleHybrid,
+        Self.openStreetMap,
+        Self.openTopoMap,
+        Self.openTopoMapCZ
+    ]
 
-    var templateUrl: String {
-        switch self {
-        case .appleStandard, .appleHybrid, .appleImagery: ""
-        case .openStreetMap: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        case .openTopoMap: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
-        case .openTopoMapCZ: "https://tile-a.opentopomap.cz/{z}/{x}/{y}.png"
-        }
-    }
+    static let appleStandard: Self = .init(
+        id: .init(),
+        name: "Apple Mapkit Standard",
+        templateUrl: "",
+        subdomains: [],
+        maximumZ: 0,
+        minimumZ: 0,
+        mapConfiguration: MKStandardMapConfiguration(elevationStyle: .flat, emphasisStyle: .default)
+    )
 
-    var subdomains: [String] {
-        switch self {
-        case .appleStandard, .appleHybrid, .appleImagery: []
-        case .openStreetMap: ["a", "b", "c"]
-        case .openTopoMap: ["a", "b", "c"]
-        case .openTopoMapCZ: ["a", "b", "c", "d"]
-        }
-    }
+    static let appleImagery: Self = .init(
+        id: .init(),
+        name: "Apple Mapkit Imagery",
+        templateUrl: "",
+        subdomains: [],
+        maximumZ: 0,
+        minimumZ: 0,
+        mapConfiguration: MKImageryMapConfiguration(elevationStyle: .flat)
+    )
 
-    var maximumZ: Int {
-        switch self {
-        case .appleStandard, .appleHybrid, .appleImagery: -1
-        case .openStreetMap: 19
-        case .openTopoMap: 17
-        case .openTopoMapCZ: 18
-        }
-    }
+    static let appleHybrid: Self = .init(
+        id: .init(),
+        name: "Apple Mapkit Hybrid",
+        templateUrl: "",
+        subdomains: [],
+        maximumZ: 0,
+        minimumZ: 0,
+        mapConfiguration: MKHybridMapConfiguration(elevationStyle: .flat)
+    )
 
-    var minimumZ: Int {
-        switch self {
-        case .appleStandard, .appleHybrid, .appleImagery: 0
-        case .openStreetMap: 0
-        case .openTopoMap: 0
-        case .openTopoMapCZ: 1
-        }
-    }
+    static let openStreetMap: Self = .init(
+        id: .init(),
+        name: "Open Street Map",
+        templateUrl: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        subdomains: ["a", "b", "c"],
+        maximumZ: 19,
+        minimumZ: 0,
+        mapConfiguration: nil
+    )
+
+    static let openTopoMap: Self = .init(
+        id: .init(),
+        name: "OpenTopoMap",
+        templateUrl: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+        subdomains: ["a", "b", "c"],
+        maximumZ: 17,
+        minimumZ: 0,
+        mapConfiguration: nil
+    )
+
+    static let openTopoMapCZ: Self = .init(
+        id: .init(),
+        name: "OpenTopoMap CZ",
+        templateUrl: "https://tile-a.opentopomap.cz/{z}/{x}/{y}.png",
+        subdomains: ["a", "b", "c", "d"],
+        maximumZ: 18,
+        minimumZ: 1,
+        mapConfiguration: nil
+    )
 }
