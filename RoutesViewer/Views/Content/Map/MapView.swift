@@ -8,18 +8,19 @@
 import Foundation
 import Cocoa
 import MapKit
-import MapCache
 
 @MainActor
 class MapView: NSView {
     var mapView: MKMapView = .init()
-    var cachedTileOverlay: CachedTileOverlay?
+    
+    var tileOverlay: TileOverlay?
+    var tileOverlayRenderer: TileOverlayRenderer?
+
     var trackOverlay: GradientPolyline?
     var trackOverlayRenderer: GradidentPolylineRenderer?
 
     var documentStorage: DocumentStorage
     var settings: Settings
-
     var selectedTrack: Track?
 
     init(documentStorage: DocumentStorage, settings: Settings) {
@@ -33,16 +34,23 @@ class MapView: NSView {
 
     private func renderTileServer() {
         withObservationTracking {
-            if let cachedTileOverlay {
-                mapView.removeOverlay(cachedTileOverlay)
+            if let tileOverlay {
+                mapView.removeOverlay(tileOverlay)
+                tileOverlayRenderer = nil
             }
 
             if let mapConfiguration = settings.tileServer.mapConfiguration {
                 mapView.preferredConfiguration = mapConfiguration
-            } else {
-                let mapCache = MapCache(withConfig: mapCacheConfig(from: settings.tileServer))
-                cachedTileOverlay = mapView.useCache(mapCache)
+                return
             }
+
+            let tileOverlay = TileOverlay(tileServer: settings.tileServer)
+            if let firstOverlay = mapView.overlays.first {
+                mapView.insertOverlay(tileOverlay, below: firstOverlay)
+            } else {
+                mapView.addOverlay(tileOverlay, level: .aboveLabels)
+            }
+            self.tileOverlay = tileOverlay
         } onChange: { [weak self] in
             Task { @MainActor [weak self] in
                 self?.renderTileServer()
@@ -126,8 +134,14 @@ class MapView: NSView {
 
 extension MapView: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        if let overlay = overlay as? CachedTileOverlay {
-            return mapView.mapCacheRenderer(forOverlay: overlay)
+        if let overlay = overlay as? TileOverlay {
+            if let tileOverlayRenderer {
+                return tileOverlayRenderer
+            } else {
+                let tileOverlayRenderer = TileOverlayRenderer(overlay: overlay)
+                self.tileOverlayRenderer = tileOverlayRenderer
+                return tileOverlayRenderer
+            }
         }
 
         if let overlay = overlay as? GradientPolyline {
@@ -170,14 +184,4 @@ extension MapView {
         self.mapView.showsZoomControls = true
         self.mapView.showsPitchControl = true
     }
-
-    func mapCacheConfig(from tileServer: TileServer) -> MapCacheConfig {
-        var config = MapCacheConfig(withUrlTemplate: tileServer.templateUrl)
-        config.minimumZ = tileServer.minimumZ
-        config.maximumZ = tileServer.maximumZ
-        config.subdomains = tileServer.subdomains
-        config.cacheName = tileServer.name
-        return config
-    }
-
 }

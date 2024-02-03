@@ -15,6 +15,7 @@ struct TileServer: Hashable, Identifiable, Codable {
     var subdomains: [String]
     var maximumZ: Int
     var minimumZ: Int
+    var canReplaceMapContent: Bool = true
 
     // Standart map styles
     var mapConfiguration: MKMapConfiguration? {
@@ -88,7 +89,7 @@ extension TileServer {
     static let openTopoMapCZ: Self = .init(
         id: 5,
         name: "OpenTopoMap CZ",
-        templateUrl: "https://tile-a.opentopomap.cz/{z}/{x}/{y}.png",
+        templateUrl: "https://tile-{s}.opentopomap.cz/{z}/{x}/{y}.png",
         subdomains: ["a", "b", "c", "d"],
         maximumZ: 18,
         minimumZ: 1
