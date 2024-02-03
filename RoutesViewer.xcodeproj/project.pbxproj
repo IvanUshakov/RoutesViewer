@@ -45,6 +45,7 @@
 		1783188B2B6ECEEA00CAC23A /* TileCacheElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1783188A2B6ECEEA00CAC23A /* TileCacheElement.swift */; };
 		1783188D2B6ECF0700CAC23A /* TileOverlayError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1783188C2B6ECF0700CAC23A /* TileOverlayError.swift */; };
 		1783188F2B6ED00200CAC23A /* Protected.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1783188E2B6ED00200CAC23A /* Protected.swift */; };
+		178318912B6EE6B800CAC23A /* CLLocationCoordinate2D+distance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178318902B6EE6B800CAC23A /* CLLocationCoordinate2D+distance.swift */; };
 		17B3BDB32B4F4D4400D94581 /* RoutesViewerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B3BDB22B4F4D4400D94581 /* RoutesViewerApp.swift */; };
 		17B3BDB52B4F4D4400D94581 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B3BDB42B4F4D4400D94581 /* ContentView.swift */; };
 		17B3BDB72B4F4D4500D94581 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17B3BDB62B4F4D4500D94581 /* Assets.xcassets */; };
@@ -118,6 +119,7 @@
 		1783188A2B6ECEEA00CAC23A /* TileCacheElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileCacheElement.swift; sourceTree = "<group>"; };
 		1783188C2B6ECF0700CAC23A /* TileOverlayError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileOverlayError.swift; sourceTree = "<group>"; };
 		1783188E2B6ED00200CAC23A /* Protected.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protected.swift; sourceTree = "<group>"; };
+		178318902B6EE6B800CAC23A /* CLLocationCoordinate2D+distance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocationCoordinate2D+distance.swift"; sourceTree = "<group>"; };
 		17B3BDAF2B4F4D4400D94581 /* RoutesViewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RoutesViewer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		17B3BDB22B4F4D4400D94581 /* RoutesViewerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutesViewerApp.swift; sourceTree = "<group>"; };
 		17B3BDB42B4F4D4400D94581 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -238,6 +240,7 @@
 			isa = PBXGroup;
 			children = (
 				1778AB4A2B51FE0B00B939C5 /* UTType+gpx.swift */,
+				178318902B6EE6B800CAC23A /* CLLocationCoordinate2D+distance.swift */,
 				1778AB582B5214CD00B939C5 /* URL+isDirectory.swift */,
 				1778AB5A2B5214DE00B939C5 /* URL+contentType.swift */,
 				17C9D4952B5B37D200CCF143 /* Sequence.swift */,
@@ -560,6 +563,7 @@
 				171EA3682B6843A000315157 /* MapViewRepresentable.swift in Sources */,
 				17C9D4942B59C28800CCF143 /* StatisticCalculator.swift in Sources */,
 				17F013062B5C1B3500D31519 /* TileServer.swift in Sources */,
+				178318912B6EE6B800CAC23A /* CLLocationCoordinate2D+distance.swift in Sources */,
 				171EA35A2B6691FF00315157 /* TrackStyle.swift in Sources */,
 				17B3BDB52B4F4D4400D94581 /* ContentView.swift in Sources */,
 				1778AB552B51FEB000B939C5 /* FilesTree.swift in Sources */,

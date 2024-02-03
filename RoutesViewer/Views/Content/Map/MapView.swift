@@ -91,8 +91,8 @@ class MapView: NSView {
                 self.mapView.setRegion(
                     .init(
                         center: coordinateRect.center,
-                        latitudinalMeters: distance(from: coordinateRect.bottomRightCoordinate, to: coordinateRect.topLeftCoordinate),
-                        longitudinalMeters: distance(from: coordinateRect.bottomRightCoordinate, to: coordinateRect.topLeftCoordinate)
+                        latitudinalMeters: coordinateRect.bottomRightCoordinate.distance(to: coordinateRect.topLeftCoordinate),
+                        longitudinalMeters: coordinateRect.bottomRightCoordinate.distance(to: coordinateRect.topLeftCoordinate)
                     ),
                     animated: false
                 )
@@ -102,28 +102,6 @@ class MapView: NSView {
                 self?.renderCurrentTrack()
             }
         }
-    }
-
-    static let earthRadius: Double = 6_371_000 // in m
-    func distance(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D, radius: Double = MapView.earthRadius) -> Double {
-        func haversin(_ angle: Double) -> Double {
-            return (1 - cos(angle)) / 2
-        }
-
-        func ahaversin(_ angle: Double) -> Double {
-            return 2 * asin(sqrt(angle))
-        }
-
-        func degreesToRadians(_ angle: Double) -> Double {
-            return (angle / 360) * 2 * .pi
-        }
-
-        let lat1 = degreesToRadians(from.latitude)
-        let lon1 = degreesToRadians(from.longitude)
-        let lat2 = degreesToRadians(to.latitude)
-        let lon2 = degreesToRadians(to.longitude)
-
-        return radius * ahaversin(haversin(lat2 - lat1) + cos(lat1) * cos(lat2) * haversin(lon2 - lon1))
     }
 
     required init?(coder: NSCoder) {
