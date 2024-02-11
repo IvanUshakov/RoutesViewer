@@ -122,18 +122,12 @@ class MapView: NSView {
             saturation: trackStyle.color.saturationComponent,
             brightness: trackStyle.color.brightnessComponent,
             alpha: 1
-        )
+        ).cgColor
 
-        renderer.lineWidth = trackStyle.weight
-        renderer.fillColor = fillColor
-        renderer.drawGradient = settings.showTrackGradient
-
-        renderer.strokeColor = .black
+        renderer.fillStyle = settings.showTrackGradient ? .gradient : .color(fillColor)
+        renderer.fillWidth = trackStyle.weight
+        renderer.borderColor = .black
         renderer.borderWidth = 1
-        renderer.drawBorder = true
-
-        renderer.arrowIconDistance = 3 * renderer.lineWidth
-        renderer.drawArrows = true
     }
 
 }

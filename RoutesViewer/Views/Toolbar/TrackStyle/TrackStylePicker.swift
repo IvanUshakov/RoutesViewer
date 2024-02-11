@@ -34,12 +34,12 @@ struct TrackStylePicker: View {
             .frame(maxWidth: .infinity)
             .font(.subheadline)
 
-            Slider(value: weightBinding, in: 4...20) {
+            Slider(value: weightBinding, in: 2...40) {
                 Text("")
             } minimumValueLabel: {
-                Text("4")
+                Text("2")
             } maximumValueLabel: {
-                Text("20")
+                Text("40")
             }
             .labelsHidden()
         }
