@@ -9,19 +9,27 @@ import SwiftUI
 
 struct ContentView: View {
     var documentStorage: DocumentStorage
+    var settings: Settings
 
     var body: some View {
         NavigationSplitView {
             FilesTree(documentStorage: documentStorage)
-                .navigationTitle(documentStorage.selectedTrack?.name ?? documentStorage.selectedDocument?.name ?? "")
         } content: {
             SidebarView(documentStorage: documentStorage)
         } detail: {
-            MapView(documentStorage: documentStorage)
+            VStack {
+                MapViewRepresentable(documentStorage: documentStorage, settings: settings)
+                GraphicsView(documentStorage: documentStorage)
+            }
+        }
+        .navigationTitle(documentStorage.selectedDocument?.name ?? "")
+        .navigationSubtitle(documentStorage.selectedTrack?.name ?? "")
+        .toolbar {
+            ToolbarView(documentStorage: documentStorage, settings: settings)
         }
     }
 }
 
 #Preview {
-    ContentView(documentStorage: .init())
+    ContentView(documentStorage: .init(), settings: .init())
 }

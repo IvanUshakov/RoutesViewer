@@ -11,11 +11,12 @@ import UniformTypeIdentifiers
 @main
 struct RoutesViewerApp: App {
     @NSApplicationDelegateAdaptor private var appDelegate: MyAppDelegate
+    @State var settings: Settings = .init()
     @State var isImporterPresented = false
 
     var body: some Scene {
         WindowGroup {
-            ContentView(documentStorage: appDelegate.documentStorage)
+            ContentView(documentStorage: appDelegate.documentStorage, settings: settings)
                 .fileImporter(isPresented: $isImporterPresented, allowedContentTypes: appDelegate.documentStorage.supportedContentTypes, allowsMultipleSelection: true) { result in
                     switch result {
                     case .success(let files):
